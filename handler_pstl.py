@@ -259,7 +259,7 @@ def run(data):
                 pub_date=int(date.timestamp()),
             ))
         with open(PODCAST_FILE, 'w', encoding='utf-8') as f:
-            f.write(pd.generate_xml())
+            pd.generate_xml_file(f)
         podcast_dict = pd.to_dict()
 
         # generate wikitext
@@ -297,7 +297,7 @@ def update_podcast():
     else:
         pd = Podcast.from_dict(podcast_dict)
     with open(PODCAST_FILE, 'w', encoding='utf-8') as f:
-        f.write(pd.generate_xml())
+        pd.generate_xml_file(f)
 
 
 if __name__ == '__main__':

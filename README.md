@@ -71,6 +71,8 @@ crontab -e
 
 `wxpush.py` wrapper for WxPusher.
 
+`podcast.py` RSS Podcast generator. Podcasts can be serialized to JSON objects.
+
 ## Write your own handler
 
 1. Find the program name.  
@@ -83,11 +85,11 @@ def run(data):
     # raw program json info, bytes
     info_raw: bytes = data['info_raw']
     # parsed json info
-    info_json = data['info_json']
+    info_json: dict = data['info_json']
     # use this session to access internet
-    session = data['session']
+    session: requests.Session = data['session']
     # arbitrary data kept during runs. must be serializable to json 
-    save: dict = data['save']  
+    save: dict = data['save']
 ```
 
 3. Add your program name to `config.json` `[programs]` list.

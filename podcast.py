@@ -1,4 +1,5 @@
 import dataclasses
+import typing
 from time import gmtime, strftime
 from typing import Optional, List
 import xml.etree.ElementTree as ET
@@ -36,6 +37,11 @@ class Podcast:
         return dataclasses.asdict(self)
 
     def generate_xml(self, *, googleplay=True, itunes=True, normal=True) -> str:
+        out = io.StringIO()
+        self.generate_xml_file(out, googleplay=googleplay, itunes=itunes, normal=normal)
+        return out.getvalue()
+
+    def generate_xml_file(self, f: typing.TextIO, *, googleplay=True, itunes=True, normal=True) -> None:
         root_tags = {
             'version': '2.0'
         }
@@ -91,10 +97,8 @@ class Podcast:
         for eps in reversed(self.episodes):
             eps.generate_xml(channel, googleplay=googleplay, itunes=itunes, normal=normal)
 
-        out = io.StringIO()
         tree = ET.ElementTree(root)
-        tree.write(out, encoding='unicode', xml_declaration=True)
-        return out.getvalue()
+        tree.write(f, encoding='unicode', xml_declaration=True)
 
 
 @dataclasses.dataclass
@@ -119,8 +123,8 @@ class PodcastEpisode:
                 self.__dict__[k] = v
         return self
 
-    def generate_xml(self, channel, *, googleplay=True, itunes=True, normal=True) -> None:
-        episode = ET.SubElement(channel, 'item')
+    def generate_xml(self, channel_node, *, googleplay=True, itunes=True, normal=True) -> None:
+        episode = ET.SubElement(channel_node, 'item')
         if self.guid is not None:
             ET.SubElement(episode, 'guid', isPermaLink='false').text = self.guid
 
