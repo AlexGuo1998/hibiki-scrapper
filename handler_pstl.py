@@ -131,6 +131,8 @@ def run(data):
     info_json: dict = data['info_json']
     session: requests.Session = data['session']
     save: dict = data['save']
+    config: dict = data['config']
+    globals().update(config)
     # print(info_json)
 
     out = []
@@ -288,6 +290,11 @@ def run(data):
 
 def update_podcast():
     print(f'update podcast file')
+
+    with open('config.json', 'r', encoding='utf-8') as f:
+        config = json.load(f).get('program_config', {}).get('pstl', {})
+    globals().update(config)
+
     with open('save.json', 'r', encoding='utf-8') as f:
         save = json.load(f)['pstl']['callback_save']
 

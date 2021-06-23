@@ -14,5 +14,13 @@
         "UID_xxx_YOUR_WXPUSH_UID"
       ]
     }
+  },
+  "program_config": {
+    "pstl": {
+      "AUDIO_DIR": "audio",
+      "ARCHIVE_DIR": "archive",
+      "PODCAST_FILE": "podcast.rss",
+      "AUDIO_URL_PREFIX": "https://some.domain/shuwarin-radio/"
+    }
   }
 }

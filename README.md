@@ -28,12 +28,11 @@ You may need a Linux PC to make things easier.
     * Specify proxy if needed. (use `null` if you don't need any proxy)  
       see https://docs.python-requests.org/en/master/user/advanced/#proxies
     * Change WxPusher token and UID list, if you want to receive WeChat notifications.
-
-2. Edit `handler_pstl.py`.
-    * `AUDIO_DIR` directory for generated m4a audio.
-    * `ARCHIVE_DIR` directory for archive (`.tar.xz`) files.
-    * `PODCAST_FILE` podcast RSS file.
-    * `AUDIO_URL_PREFIX` Web URL for your `AUDIO_DIR`, for wikitext and podcast.
+    * For `["program_config"]["pstl"]`, these will override constants defined in `handler_pstl.py`
+        * `AUDIO_DIR` directory for generated m4a audio.
+        * `ARCHIVE_DIR` directory for archive (`.tar.xz`) files.
+        * `PODCAST_FILE` podcast RSS file.
+        * `AUDIO_URL_PREFIX` Web URL for your `AUDIO_DIR`, for wikitext and podcast.
 
 3. Edit `run.sh` to fit your situation, and run it.
 
@@ -90,9 +89,13 @@ def run(data):
     session: requests.Session = data['session']
     # arbitrary data kept during runs. must be serializable to json 
     save: dict = data['save']
+    # update global constants from config
+    config: dict = data['config']
+    globals().update(config)
 ```
 
-3. Add your program name to `config.json` `[programs]` list.
+3. Add your program name to `config.json` `["programs"]` list.  
+   Optionally, add override variables to `["program_config"]["(program name)"]` 
 
 4. It might be better to `raise` exceptions rather than sending notifications when debugging. See `def main()` in `main.py`.
 

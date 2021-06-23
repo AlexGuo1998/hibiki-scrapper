@@ -32,12 +32,12 @@ class Loader:
             proxy_dict['https'] = https_proxy
         self.session.proxies = proxy_dict
 
-    def run(self, program_name, save):
+    def run(self, program_name, save, program_config):
         # run with "live" json info
         info_json, info_raw = self.get_program_info(program_name)
-        return self._run_implementation(program_name, save, info_json, info_raw)
+        return self._run_implementation(program_name, save, program_config, info_json, info_raw)
 
-    def run_archived(self, program_name, save, info_raw_list):
+    def run_archived(self, program_name, save, program_config, info_raw_list):
         # run with "archived" json info
         result = False
         for i, info_raw in enumerate(info_raw_list):
@@ -45,10 +45,10 @@ class Loader:
             print(f'{i} of {len(info_raw_list)}')
             print('')
             info_json = json.loads(info_raw.decode('utf-8'))
-            result = self._run_implementation(program_name, save, info_json, info_raw) or result
+            result = self._run_implementation(program_name, save, program_config, info_json, info_raw) or result
         return result
 
-    def _run_implementation(self, program_name, save, info_json: dict, info_raw: bytes):
+    def _run_implementation(self, program_name, save, program_config, info_json: dict, info_raw: bytes):
         episode_info = info_json['episode']
         episode_id: int = episode_info['id']
         episode_name: str = episode_info['name']
@@ -67,6 +67,7 @@ class Loader:
                 'info_json': info_json,
                 'session': self.session,
                 'save': save.setdefault('callback_save', {}),
+                'config': program_config,
             }
             handler.run(data)
 
@@ -118,7 +119,8 @@ def main():
         print(f'check program {program_name}')
         try:
             program_save = save.setdefault(program_name, {})
-            has_new = loader.run(program_name, program_save)
+            program_config = config.get('program_config', {}).get(program_name, {})
+            has_new = loader.run(program_name, program_save, program_config)
             if has_new:
                 save_changed = True
         except Exception:
@@ -158,7 +160,8 @@ def main_archived():
             info_raw_list.append(f.read())
 
     program_save = save.setdefault(program_name, {})
-    loader.run_archived(program_name, program_save, info_raw_list=info_raw_list)
+    program_config = config.get('program_config', {}).get(program_name, {})
+    loader.run_archived(program_name, program_save, program_config, info_raw_list)
 
     with open('save.json', 'w', encoding='utf-8') as f:
         json.dump(save, f, ensure_ascii=False, indent=4)
