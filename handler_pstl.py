@@ -47,7 +47,7 @@ TABLE_TEMPLATE = string.Template('''\
 |${index}
 |${date}
 |{{PastelPalettes出演列表|${icon}}}
-|style=text-align:left|{{HideInline|录制后感想|<br>{{Lang|ja|${content}}}}}
+|style=text-align:left|{{HideInline|录制后感想|<br>{{lj|${content}}}}}
 |${url}''')
 
 
@@ -303,6 +303,8 @@ def update_podcast():
         raise ValueError('no podcast data')
     else:
         pd = Podcast.from_dict(podcast_dict)
+
+    print(f'writing {PODCAST_FILE}')
     with open(PODCAST_FILE, 'w', encoding='utf-8') as f:
         pd.generate_xml_file(f)
 
