@@ -53,7 +53,7 @@ TABLE_TEMPLATE = string.Template('''\
 
 def gen_table(j):
     episode_name: str = j['episode']['name']
-    match = re.match(r'第(\d+)回', episode_name)
+    match = re.search(r'第(\d+)回', episode_name)
     assert match is not None
     episode_index = int(match.group(1))
 

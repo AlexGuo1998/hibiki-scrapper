@@ -51,7 +51,7 @@ class Downloader:
         # TODO may not always working (how do we parse all names safely?)
         #  e.g. '第240BanG!!!!!'
         #       '第38回（通算90回）'
-        match = re.match(r'第(\d+)回', episode_name)
+        match = re.search(r'第(\d+)回', episode_name)
         assert match is not None
         episode_index = int(match.group(1))
 
